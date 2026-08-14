@@ -8,7 +8,23 @@ export type Product = {
   description: string;
 };
 
+export type Review = {
+  id: string;
+  author: string;
+  rating: number;
+  body: string;
+  at: string;
+};
+
 export type OrderItem = { productId: string; quantity: number };
+
+export type Order = {
+  orderId: string;
+  total: number;
+  status: string;
+  placedAt: string;
+  items: OrderItem[];
+};
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
@@ -24,6 +40,19 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   getProducts: () => request<Product[]>("/products"),
   getProduct: (id: string) => request<Product>(`/products/${id}`),
+  searchProducts: (q: string) =>
+    request<Product[]>(`/products?q=${encodeURIComponent(q)}`),
+  getReviews: (productId: string) =>
+    request<Review[]>(`/products/${productId}/reviews`),
+  getOrders: (token: string) =>
+    request<Order[]>("/orders", {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  /**
+   * @deprecated 1.x catalog route, kept only until the old share-link format
+   * is fully retired. Use getProduct instead.
+   */
+  getCatalogItem: (id: string) => request<Product>(`/catalog/${id}`),
   createGuestSession: () => request<{ token: string }>("/auth/guest", { method: "POST" }),
   createOrder: (token: string, items: OrderItem[]) =>
     request<{ orderId: string; total: number }>("/orders", {
