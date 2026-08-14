@@ -13,5 +13,5 @@ export async function ensureSession(): Promise<string> {
 }
 
 export async function getSessionToken(): Promise<string | null> {
-  return SecureStore.getItemAsync(TOKEN_KEY);
+  return SecureStore.getItemAsync("abs.session.token");
 }
