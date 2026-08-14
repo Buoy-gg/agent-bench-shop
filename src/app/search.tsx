@@ -54,7 +54,7 @@ export default function SearchScreen() {
       <TextInput
         testID="search-input"
         style={styles.input}
-        placeholder="Search benches"
+        placeholder="Search the shop"
         placeholderTextColor={colors.muted}
         value={query}
         onChangeText={setQuery}
