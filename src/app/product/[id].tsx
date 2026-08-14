@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -12,6 +12,7 @@ import {
 
 import { api, type Product } from "../../lib/api";
 import { useCartStore } from "../../lib/cart-store";
+import { recordView } from "../../lib/recently-viewed";
 import { useWishlistStore } from "../../lib/wishlist-store";
 import { colors } from "../../lib/theme";
 
@@ -60,6 +61,12 @@ export default function ProductDetailScreen() {
         .getQueryData<Product[]>(["products"])
         ?.find((item) => item.id === id),
   });
+
+  useEffect(() => {
+    if (product) {
+      recordView(product).catch(() => {});
+    }
+  }, [product]);
 
   if (isPending) {
     return <ActivityIndicator testID="product-loading" style={styles.center} />;

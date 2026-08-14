@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,6 +12,7 @@ import {
 
 import { api } from "../lib/api";
 import { cartCount, useCartStore } from "../lib/cart-store";
+import { getRecentlyViewed, type ViewedProduct } from "../lib/recently-viewed";
 import { colors } from "../lib/theme";
 
 function CartButton() {
@@ -56,6 +58,39 @@ function QuickNav() {
   );
 }
 
+function RecentlyViewedStrip() {
+  const [viewed, setViewed] = useState<ViewedProduct[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getRecentlyViewed()
+        .then(setViewed)
+        .catch(() => {});
+    }, [])
+  );
+
+  if (viewed.length === 0) return null;
+
+  return (
+    <View style={styles.viewedWrap}>
+      <Text style={styles.viewedLabel}>Recently viewed</Text>
+      <View style={styles.viewedChips}>
+        {viewed.map((item, index) => (
+          <Link
+            key={`${item.id}-${index}`}
+            href={{ pathname: "/product/[id]", params: { id: item.id } }}
+            asChild
+          >
+            <Pressable testID={`viewed-${item.id}`} style={styles.viewedChip}>
+              <Text style={styles.viewedChipText}>{item.name}</Text>
+            </Pressable>
+          </Link>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export default function ProductsScreen() {
   const { data, isPending, refetch } = useQuery({
     queryKey: ["products"],
@@ -66,6 +101,7 @@ export default function ProductsScreen() {
     <View style={styles.screen}>
       <Stack.Screen options={{ headerRight: () => <CartButton /> }} />
       <QuickNav />
+      <RecentlyViewedStrip />
       {isPending ? (
         <ActivityIndicator testID="products-loading" style={styles.center} />
       ) : !data ? (
@@ -121,6 +157,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   quickNavText: { fontSize: 13, fontWeight: "600", color: colors.ink },
+  viewedWrap: { paddingHorizontal: 16, paddingTop: 12, gap: 8 },
+  viewedLabel: { fontSize: 13, fontWeight: "600", color: colors.muted },
+  viewedChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  viewedChip: {
+    backgroundColor: "#E7F5EF",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  viewedChipText: { fontSize: 13, fontWeight: "600", color: colors.accent },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   list: { padding: 16, gap: 12 },
   card: {
