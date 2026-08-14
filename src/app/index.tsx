@@ -55,7 +55,7 @@ export default function ProductsScreen() {
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
             <Link
-              href={{ pathname: "/product/[id]", params: { id: item.id } }}
+              href={{ pathname: "/product/[id]", params: { productId: item.id } }}
               asChild
             >
               <Pressable testID={`product-${item.id}`} style={styles.card}>
