@@ -29,6 +29,33 @@ function CartButton() {
   );
 }
 
+function QuickNav() {
+  return (
+    <View style={styles.quickNav}>
+      <Link href="/search" asChild>
+        <Pressable testID="nav-search" style={styles.quickNavItem}>
+          <Text style={styles.quickNavText}>Search</Text>
+        </Pressable>
+      </Link>
+      <Link href="/orders" asChild>
+        <Pressable testID="nav-orders" style={styles.quickNavItem}>
+          <Text style={styles.quickNavText}>Orders</Text>
+        </Pressable>
+      </Link>
+      <Link href="/wishlist" asChild>
+        <Pressable testID="nav-wishlist" style={styles.quickNavItem}>
+          <Text style={styles.quickNavText}>Wishlist</Text>
+        </Pressable>
+      </Link>
+      <Link href="/settings" asChild>
+        <Pressable testID="nav-settings" style={styles.quickNavItem}>
+          <Text style={styles.quickNavText}>Settings</Text>
+        </Pressable>
+      </Link>
+    </View>
+  );
+}
+
 export default function ProductsScreen() {
   const { data, isPending, refetch } = useQuery({
     queryKey: ["products"],
@@ -38,6 +65,7 @@ export default function ProductsScreen() {
   return (
     <View style={styles.screen}>
       <Stack.Screen options={{ headerRight: () => <CartButton /> }} />
+      <QuickNav />
       {isPending ? (
         <ActivityIndicator testID="products-loading" style={styles.center} />
       ) : !data ? (
@@ -78,6 +106,21 @@ export default function ProductsScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
+  quickNav: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
+  quickNavItem: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.line,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  quickNavText: { fontSize: 13, fontWeight: "600", color: colors.ink },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   list: { padding: 16, gap: 12 },
   card: {
