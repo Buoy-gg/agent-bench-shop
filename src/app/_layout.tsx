@@ -33,7 +33,7 @@ export default function RootLayout() {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister, maxAge: DAY_MS, buster: "v1" }}
+      persistOptions={{ persister, maxAge: 0, buster: "v1" }}
     >
       <Stack
         screenOptions={{
