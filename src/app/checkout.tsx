@@ -83,7 +83,7 @@ export default function CheckoutScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, padding: 16, gap: 16 },
-  center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 8, padding: 24 },
+  center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10, padding: 28 },
   summary: {
     backgroundColor: colors.card,
     borderRadius: 14,
