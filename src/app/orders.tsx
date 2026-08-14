@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 8 },
   emptyText: { fontSize: 16, color: colors.muted },
   errorText: { color: colors.danger, fontSize: 15 },
-  list: { padding: 16, gap: 12 },
+  list: { padding: 16, gap: 10 },
   row: {
     flexDirection: "row",
     alignItems: "center",
