@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -11,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-import { api } from "../lib/api";
+import { api, type Product } from "../lib/api";
 import { useSettingsStore } from "../lib/settings-store";
 import { keyFor, readJSON, writeJSON } from "../lib/storage";
 import { colors } from "../lib/theme";
@@ -21,7 +20,8 @@ const RECENT_LIMIT = 8;
 
 export default function SearchScreen() {
   const [query, setQuery] = useState("");
-  const [submitted, setSubmitted] = useState("");
+  const [results, setResults] = useState<Product[] | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const [recent, setRecent] = useState<string[]>([]);
   const showRecentSearches = useSettingsStore((state) => state.showRecentSearches);
 
@@ -33,21 +33,30 @@ export default function SearchScreen() {
       .catch(() => {});
   }, []);
 
-  const runSearch = (term: string) => {
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (!trimmed) {
+      setResults(null);
+      setIsSearching(false);
+      return;
+    }
+    setIsSearching(true);
+    api
+      .searchProducts(trimmed)
+      .then((products) => {
+        setResults(products);
+        setIsSearching(false);
+      })
+      .catch(() => setIsSearching(false));
+  }, [query]);
+
+  const saveRecent = (term: string) => {
     const trimmed = term.trim();
     if (!trimmed) return;
-    setQuery(trimmed);
-    setSubmitted(trimmed);
     const next = [trimmed, ...recent.filter((t) => t !== trimmed)].slice(0, RECENT_LIMIT);
     setRecent(next);
     writeJSON(RECENT_KEY, next).catch(() => {});
   };
-
-  const { data: results, isFetching } = useQuery({
-    queryKey: ["search", submitted],
-    queryFn: () => api.searchProducts(submitted),
-    enabled: submitted.length > 0,
-  });
 
   return (
     <View style={styles.screen}>
@@ -58,12 +67,12 @@ export default function SearchScreen() {
         placeholderTextColor={colors.muted}
         value={query}
         onChangeText={setQuery}
-        onSubmitEditing={() => runSearch(query)}
+        onSubmitEditing={() => saveRecent(query)}
         autoCorrect={false}
         autoCapitalize="none"
         returnKeyType="search"
       />
-      {submitted.length === 0 ? (
+      {query.trim().length === 0 ? (
         showRecentSearches ? (
           <View style={styles.recentWrap} testID="recent-searches">
             <Text style={styles.sectionLabel}>Recent searches</Text>
@@ -73,7 +82,7 @@ export default function SearchScreen() {
                   key={`${term}-${index}`}
                   testID={`recent-${index}`}
                   style={styles.chip}
-                  onPress={() => runSearch(term)}
+                  onPress={() => setQuery(term)}
                 >
                   <Text style={styles.chipText}>{term}</Text>
                 </Pressable>
@@ -81,11 +90,11 @@ export default function SearchScreen() {
             </View>
           </View>
         ) : null
-      ) : isFetching && !results ? (
+      ) : isSearching && !results ? (
         <ActivityIndicator testID="search-loading" style={styles.center} />
       ) : !results || results.length === 0 ? (
         <View style={styles.center} testID="search-empty">
-          <Text style={styles.emptyText}>No benches match “{submitted}”.</Text>
+          <Text style={styles.emptyText}>No benches match “{query.trim()}”.</Text>
         </View>
       ) : (
         <FlatList
