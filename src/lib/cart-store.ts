@@ -62,7 +62,14 @@ export const useCartStore = create<CartState>()(
         })),
       clear: () => set({ lines: [] }),
     }),
-    { name: "abs.cart", storage: createJSONStorage(() => AsyncStorage) }
+    {
+      name: "abs.cart",
+      storage: createJSONStorage(() => ({
+        getItem: (name) => AsyncStorage.getItem(`v2.${name}`),
+        setItem: (name, value) => AsyncStorage.setItem(name, value),
+        removeItem: (name) => AsyncStorage.removeItem(name),
+      })),
+    }
   )
 );
 
