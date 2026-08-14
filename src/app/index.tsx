@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   cardBody: { flex: 1, gap: 2 },
   name: { fontSize: 16, fontWeight: "600", color: colors.ink },
   meta: { fontSize: 13, color: colors.muted },
-  price: { fontSize: 16, fontWeight: "700", color: colors.accent },
+  price: { fontSize: 16, fontWeight: "800", color: colors.accent },
   cartButton: { padding: 4 },
   cartLabel: { fontSize: 16, fontWeight: "600", color: colors.accent },
   badge: {
