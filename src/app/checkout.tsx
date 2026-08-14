@@ -12,6 +12,7 @@ export default function CheckoutScreen() {
   const clear = useCartStore((state) => state.clear);
 
   const order = useMutation({
+    retry: true,
     mutationFn: async () => {
       const token = await getSessionToken();
       if (!token) {
