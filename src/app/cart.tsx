@@ -12,7 +12,7 @@ export default function CartScreen() {
   if (lines.length === 0) {
     return (
       <View style={styles.center} testID="cart-empty">
-        <Text style={styles.emptyText}>Your cart is empty.</Text>
+        <Text style={styles.emptyText}>Your cart is empty — go find a bench.</Text>
       </View>
     );
   }
