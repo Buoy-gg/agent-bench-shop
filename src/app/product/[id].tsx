@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
     gap: 12,
   },
-  reviewAverage: { fontSize: 15, fontWeight: "700", color: colors.ink },
+  reviewAverage: { fontSize: 16, fontWeight: "700", color: colors.ink },
   reviewRow: {
     backgroundColor: colors.card,
     borderRadius: 12,
