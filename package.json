@@ -6,6 +6,7 @@
     "@buoy-gg/console": "^7.0.19",
     "@buoy-gg/core": "^7.0.19",
     "@buoy-gg/events": "^7.0.19",
+    "@buoy-gg/external-sync": "^7.0.19",
     "@buoy-gg/highlight-updates": "^7.0.19",
     "@buoy-gg/network": "^7.0.19",
     "@buoy-gg/react-query": "^7.0.19",
