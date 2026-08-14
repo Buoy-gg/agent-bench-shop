@@ -38,7 +38,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getProducts: () => request<Product[]>("/products"),
+  getProducts: () => request<Product[]>("/products?fields=id,name,price,material"),
   getProduct: (id: string) => request<Product>(`/products/${id}`),
   searchProducts: (q: string) =>
     request<Product[]>(`/products?q=${encodeURIComponent(q)}`),
