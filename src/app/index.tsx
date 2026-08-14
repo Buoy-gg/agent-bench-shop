@@ -30,7 +30,7 @@ function CartButton() {
 }
 
 export default function ProductsScreen() {
-  const { data, isPending, isError, refetch } = useQuery({
+  const { data, isPending, refetch } = useQuery({
     queryKey: ["products"],
     queryFn: api.getProducts,
   });
@@ -40,7 +40,7 @@ export default function ProductsScreen() {
       <Stack.Screen options={{ headerRight: () => <CartButton /> }} />
       {isPending ? (
         <ActivityIndicator testID="products-loading" style={styles.center} />
-      ) : isError ? (
+      ) : !data ? (
         <View style={styles.center} testID="products-error">
           <Text style={styles.errorText}>Couldn't load the shop.</Text>
           <Pressable style={styles.retryButton} onPress={() => refetch()}>
