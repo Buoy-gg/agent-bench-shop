@@ -9,6 +9,16 @@ import {
   View,
 } from "react-native";
 
+import {
+  LoyaltyStrip,
+  RecentlyViewedStrip,
+  PriceAlertsStrip,
+  AnnouncementsStrip,
+  DeliverySlotsStrip,
+  CouponsStrip,
+  NotificationsStrip,
+  OrderTrackingStrip,
+} from "./_widgets";
 import { api } from "../lib/api";
 import { cartCount, useCartStore } from "../lib/cart-store";
 import { colors } from "../lib/theme";
@@ -66,6 +76,14 @@ export default function ProductsScreen() {
     <View style={styles.screen}>
       <Stack.Screen options={{ headerRight: () => <CartButton /> }} />
       <QuickNav />
+      <LoyaltyStrip />
+      <RecentlyViewedStrip />
+      <PriceAlertsStrip />
+      <AnnouncementsStrip />
+      <DeliverySlotsStrip />
+      <CouponsStrip />
+      <NotificationsStrip />
+      <OrderTrackingStrip />
       {isPending ? (
         <ActivityIndicator testID="products-loading" style={styles.center} />
       ) : !data ? (
