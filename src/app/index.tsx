@@ -1,6 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, Stack, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link, Stack } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
@@ -10,19 +9,8 @@ import {
   View,
 } from "react-native";
 
-import {
-  LoyaltyStrip,
-  RecentlyViewedStrip,
-  PriceAlertsStrip,
-  AnnouncementsStrip,
-  DeliverySlotsStrip,
-  CouponsStrip,
-  NotificationsStrip,
-  OrderTrackingStrip,
-} from "./_widgets";
-import { api, type Order } from "../lib/api";
-import { ensureSession } from "../lib/auth";
-import { qk } from "../lib/query-keys";
+import { HomeModules } from "./_widgets/HomeModules";
+import { api } from "../lib/api";
 import { cartCount, useCartStore } from "../lib/cart-store";
 import { colors } from "../lib/theme";
 
@@ -37,48 +25,6 @@ function CartButton() {
             <Text style={styles.badgeText}>{count}</Text>
           </View>
         )}
-      </Pressable>
-    </Link>
-  );
-}
-
-/**
- * "Your last order" strip. Refreshes whenever the shop comes back into focus so
- * it still reads correctly right after a checkout, and warms the order-history
- * cache on the way through so the Orders tab paints instantly instead of
- * showing a spinner.
- */
-function RecentOrder() {
-  const queryClient = useQueryClient();
-  const [recent, setRecent] = useState<Order | null>(null);
-
-  useFocusEffect(
-    useCallback(() => {
-      let cancelled = false;
-      (async () => {
-        try {
-          const orders = await api.getRecentOrders(await ensureSession(), 1);
-          if (cancelled) return;
-          setRecent(orders[orders.length - 1] ?? null);
-          queryClient.setQueryData(qk.orders(), orders);
-        } catch {
-          // A missing strip is not worth surfacing on the shop screen.
-        }
-      })();
-      return () => {
-        cancelled = true;
-      };
-    }, [queryClient])
-  );
-
-  if (!recent) return null;
-  return (
-    <Link href="/orders" asChild>
-      <Pressable testID="recent-order" style={styles.recentOrder}>
-        <Text style={styles.recentOrderLabel}>Your last order</Text>
-        <Text style={styles.recentOrderValue}>
-          {recent.orderId} · ${recent.total}
-        </Text>
       </Pressable>
     </Link>
   );
@@ -121,15 +67,7 @@ export default function ProductsScreen() {
     <View style={styles.screen}>
       <Stack.Screen options={{ headerRight: () => <CartButton /> }} />
       <QuickNav />
-      <RecentOrder />
-      <LoyaltyStrip />
-      <RecentlyViewedStrip />
-      <PriceAlertsStrip />
-      <AnnouncementsStrip />
-      <DeliverySlotsStrip />
-      <CouponsStrip />
-      <NotificationsStrip />
-      <OrderTrackingStrip />
+      <HomeModules />
       {isPending ? (
         <ActivityIndicator testID="products-loading" style={styles.center} />
       ) : !data ? (
@@ -210,17 +148,6 @@ const styles = StyleSheet.create({
   name: { fontSize: 16, fontWeight: "600", color: colors.ink },
   meta: { fontSize: 13, color: colors.muted },
   price: { fontSize: 16, fontWeight: "700", color: colors.accent },
-  recentOrder: {
-    marginHorizontal: 16,
-    marginBottom: 8,
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  recentOrderLabel: { fontSize: 12, color: colors.muted },
-  recentOrderValue: { fontSize: 15, fontWeight: "600", color: colors.ink },
   cartButton: { padding: 4 },
   cartLabel: { fontSize: 16, fontWeight: "600", color: colors.accent },
   badge: {

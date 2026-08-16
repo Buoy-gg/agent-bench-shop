@@ -44,11 +44,6 @@ export const api = {
     request<Product[]>(`/products?q=${encodeURIComponent(q)}`),
   getReviews: (productId: string) =>
     request<Review[]>(`/products/${productId}/reviews`),
-  /** The N most recent orders — used by the home screen's "recent order" strip. */
-  getRecentOrders: (token: string, limit = 1) =>
-    request<Order[]>(`/orders?limit=${limit}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
   getOrders: (token: string) =>
     request<Order[]>("/orders", {
       headers: { Authorization: `Bearer ${token}` },
