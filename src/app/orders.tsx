@@ -3,11 +3,12 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-nativ
 
 import { api } from "../lib/api";
 import { ensureSession } from "../lib/auth";
+import { qk } from "../lib/query-keys";
 import { colors } from "../lib/theme";
 
 export default function OrdersScreen() {
   const { data, isPending, isError } = useQuery({
-    queryKey: ["orders"],
+    queryKey: qk.orders(),
     queryFn: async () => api.getOrders(await ensureSession()),
   });
 
